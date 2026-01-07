@@ -1,38 +1,52 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "MyFirstActor.h"
 
-// Sets default values
 AMyFirstActor::AMyFirstActor()
 {
-	PrimaryActorTick.bCanEverTick = false; // Tick пока не нужен
-	Health = 100.f; // начальное здоровье
+	PrimaryActorTick.bCanEverTick = false;
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("StaticMesh"));
+	RootComponent = StaticMesh;
+	Health = 100.f;
+	bIsDead = false;
+}
 
+void AMyFirstActor::BeginPlay()
+{
+	Super::BeginPlay();
+}
+void AMyFirstActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 void AMyFirstActor::TakeDamage(float Damage)
 {
+	if (bIsDead)
+	{
+		return;
+	}
+
 	Health -= Damage;
 
-	UE_LOG(LogTemp, Warning, TEXT("TakeDamage called. Health now: %f"), Health);
+	UE_LOG(LogTemp, Warning, TEXT("Damage taken: %f | Health: %f"), Damage, Health);
 
 	if (Health <= 0.f)
 	{
-		Destroy(); // удаляем Actor из мира
+		bIsDead = true;
+		OnDeath();
 	}
 }
-// Called when the game starts or when spawned
-void AMyFirstActor::BeginPlay()
+
+void AMyFirstActor::OnDeath()
 {
-	Super::BeginPlay();
-	
+	UE_LOG(LogTemp, Warning, TEXT("Actor died"));
+
+	StaticMesh->SetVisibility(false);
+
+	GetWorldTimerManager().SetTimer(DestroyTimerHandle,this,&AMyFirstActor::FinishDestruction,2.f,false);
 }
 
-// Called every frame
-void AMyFirstActor::Tick(float DeltaTime)
+void AMyFirstActor::FinishDestruction()
 {
-	Super::Tick(DeltaTime);
-
+	Destroy();
 }
 

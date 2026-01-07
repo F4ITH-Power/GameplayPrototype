@@ -12,20 +12,25 @@ class GAMEPLAYPROTOTYPE_API AMyFirstActor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AMyFirstActor();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	float Health;
-
-	UFUNCTION(BlueprintCallable, Category = "Stats")
+	
 	void TakeDamage(float Damage);
 
 protected:
-	// Called when the game starts or when spawned
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* StaticMesh;
+	
+	virtual void OnDeath();
+	
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
+private:
+	// === Состояние ===
+	bool bIsDead;
+	float Health;
+	// === Таймер ===
+	FTimerHandle DestroyTimerHandle;
+	
+	void FinishDestruction();
 };
