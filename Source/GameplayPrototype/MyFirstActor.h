@@ -20,7 +20,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* StaticMesh;
 	
-	virtual void OnDeath();
+	UFUNCTION(BlueprintImplementableEvent, Category="Events")
+	void OnDeath();
 	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -32,5 +33,6 @@ private:
 	// === Таймер ===
 	FTimerHandle DestroyTimerHandle;
 	
+	void HandleDeath();
 	void FinishDestruction();
 };

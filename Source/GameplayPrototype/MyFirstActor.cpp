@@ -32,17 +32,18 @@ void AMyFirstActor::TakeDamage(float Damage)
 	if (Health <= 0.f)
 	{
 		bIsDead = true;
-		OnDeath();
+		HandleDeath();
 	}
 }
 
-void AMyFirstActor::OnDeath()
+void AMyFirstActor::HandleDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Actor died"));
 
 	StaticMesh->SetVisibility(false);
 
 	GetWorldTimerManager().SetTimer(DestroyTimerHandle,this,&AMyFirstActor::FinishDestruction,2.f,false);
+	OnDeath();
 }
 
 void AMyFirstActor::FinishDestruction()
